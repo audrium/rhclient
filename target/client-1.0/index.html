@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico" />
+		
+		<title>DataTables example</title>
+		<style type="text/css" title="currentStyle">
+			@import "external/DataTables-1.9.4/media/css/demo_page.css";
+			@import "external/DataTables-1.9.4/media/css/jquery.dataTables_themeroller.css";
+			@import "external/DataTables-1.9.4/media/css/demo_table.css";
+			@import "external/DataTables-1.9.4/examples/examples_support/themes/smoothness/jquery-ui-1.8.4.custom.css";
+		</style>
+		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/jquery.js"></script>
+		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" language="javascript" src="external/Highcharts/js/highcharts.js"></script>
+		<script type="text/javascript" language="javascript" src="js/lib.js"></script>
+		<script type="text/javascript" language="javascript" src="js/table.js"></script>
+		<script type="text/javascript" language="javascript" src="js/charts.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				
+				var server = $.rhServer("http://pccmsdqm04:8112");
+
+				var q1 = server.query("select * from store.customer c where c.\"Country\" = ?");
+				$('#dynamic').rhTable({query: q1, paramFunc: function(){ return {p1: "USA"} } } );
+
+				
+
+				//var q1 = server.query("SELECT * FROM store.sales c WHERE c.\"SAL_UNITS\" > 2 AND c.\"SAL_ID\" > 251350 ");
+				//$('#dynamic').rhTable({query: q1 , maxColumns: 8} );
+				
+
+
+
+				$('#highcharts-container').rhChart({query: q1});
+				 /*
+				 title: 'rhChart'
+				 subtitle: ''
+				 */
+			} );
+		</script>
+
+
+	</head>
+		<body id="dt_example">
+		<div id="container">	
+			<h1>Datatables</h1>
+			<div class="test" id="dynamic"></div>
+			<div class="test" id="dynamic2"></div>
+		</div>
+		<br>
+		<div id="highcharts-container" style="width:100%; height:400px;"></div>
+	</body>
+</html>

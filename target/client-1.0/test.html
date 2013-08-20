@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery.getJSON demo</title>
+  <style>img{ height: 100px; float: left; }	</style>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+<body>
+  <div id="images">
+ 
+</div>
+<script>
+(function() {
+  //var url = "http://pccmsdqm04:8112/query/14072f745dd/page/2/2/data?cols=true";
+  var url = "http://pccmsdqm04:8112/query/14072f745dd/data";
+  
+  $.ajax({
+        beforeSend: function(xhrObj){
+                xhrObj.setRequestHeader("Accept","application/json");
+               //xhrObj.setRequestHeader("User-Agent","jQuery");
+        },
+        type: "GET",
+        url: url,
+        processData: false,
+        dataType: "json",
+        success: function(json){
+                var sampleData = [], results = json.columns;
+                 alert(json.adminName3);
+        
+                for (var i = 0, len = results.length; i < len; i++) {
+                    var result = results[i];
+                    sampleData.push({ message: result.message, value: result.value });
+                }
+                alert(sampleData);
+
+                var locations = [];
+                $.each(json.results.bindings, function(i, obj) {
+                    locations.push([obj.place.value, obj.lat.value, obj.long.value, obj.page.value]);
+                });
+        }
+});
+})();
+</script>
+ 
+</body>
+</html>

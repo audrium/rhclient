@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico" />
+		
+		<title>DataTables example</title>
+		<style type="text/css" title="currentStyle">
+			@import "external/DataTables-1.9.4/media/css/demo_page.css";
+			@import "external/DataTables-1.9.4/media/css/jquery.dataTables_themeroller.css";
+			@import "external/DataTables-1.9.4/media/css/demo_table.css";
+			@import "external/DataTables-1.9.4/examples/examples_support/themes/smoothness/jquery-ui-1.8.4.custom.css";
+		</style>
+		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/jquery.js"></script>
+		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" language="javascript" src="external/Highcharts/js/highcharts.js"></script>
+		<script type="text/javascript" language="javascript" src="js/lib.js"></script>
+		<script type="text/javascript" language="javascript" src="js/table.js"></script>
+		<script type="text/javascript" language="javascript" src="js/charts.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				
+				$.urlParam = function(name){
+				    var results = new RegExp('[\\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href);
+				    return results[1] || 0;
+				}
+				var id = $.urlParam('id');
+				console.log(id);
+
+				var server = $.rhServer("http://pccmsdqm04:8112");
+
+				var q1 = server.query("select * from store.sales c where c.\"SAL_CUS_ID\" = ?");
+				$('#dynamic').rhTable({query: q1, paramFunc: function(){ return {p1: id} }, maxColumns: 8} );
+			} );
+		</script>
+
+
+	</head>
+		<body id="dt_example">
+
+		<div id="container" style="width:80%;">	
+			<h1>Sales</h1>
+			<div class="test" id="dynamic"></div>
+		</div>
+
+		<br>
+
+	</body>
+</html>
