@@ -1,9 +1,5 @@
 (function($){
      $.fn.extend({
-        
-        /*
-            TODO: searching, filtering
-        */
 
         rhTable: function(options) {
             return this.each(function() {
@@ -11,7 +7,8 @@
                 options = $.extend({
                             query: undefined,
                             paramFunc: undefined,
-                            maxColumns: 4
+                            maxColumns: 4,
+                            tableOptions: undefined
                         }, options);
 
                 var Sthis = $(this);
@@ -40,19 +37,18 @@
                     // TABLE
                     var t = $('<table cellpadding="0" cellspacing="0" border="0" class="display"></table>');
                     Sthis.append(t);
-                    oTable = t.dataTable( {
+
+                    var tableOptions = {
                         "sDom":             '<"H"lrCf>t<"F"ip>',
-                        "bJQueryUI":        true,
                         "sPaginationType": "full_numbers",
+                        "bJQueryUI":        true,
                         "bProcessing":      true,
                         "bDeferRender":     true, 
                         "bServerSide":      true,
                         "bSort":            true,
                         "bFilter":          true,
                         "bStateSave":       true,
-                        //"sAjaxSource": options.query.data(params).data,
-                        //"aaData": options.query.data(params).data,
-
+                        "aoColumns":        aoColumns,
                         "fnServerData":     function (sSource, aoData, fnCallback) {
                                                 options.query.data({
                                                     params: params, 
@@ -70,25 +66,11 @@
                                                         fnCallback(obj); 
                                                     }
                                             });
-                                            },
-                        "aoColumns": aoColumns
-                    } ); 
-                    
-                    // ROW CLICK 
-                    $('table td').live('dblclick',function(){
-                        var aPos = oTable.fnGetPosition(this);
-                        var aData = oTable.fnGetData(aPos[0]);
-                        window.open('fillReq.html?id='+aData[0],'_self');
-                    });
+                                            }
+                    };
 
-                    // ROW HIGHLIGHT
-                    $('tbody').click(function(event) {
-                        $(oTable.fnSettings().aoData).each(function (){
-                            $(this.nTr).removeClass('row_selected');
-                        });
-                        $(event.target.parentNode).addClass('row_selected');
-                    });
-
+                    tableOptions = $.extend(tableOptions, options.tableOptions);
+                    oTable = t.dataTable(tableOptions); 
                     Sthis.data("table", oTable);
                 } 
 

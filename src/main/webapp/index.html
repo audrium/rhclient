@@ -17,29 +17,44 @@
 		<script type="text/javascript" language="javascript" src="js/lib.js"></script>
 		<script type="text/javascript" language="javascript" src="js/table.js"></script>
 		<script type="text/javascript" language="javascript" src="js/charts.js"></script>
+
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
 				
 				var server = $.rhServer("http://pccmsdqm04:8112");
-
-				var q1 = server.query("SELECT * FROM store.customer c WHERE c.\"Country\" = ?");
+				var q1 = server.query("SELECT * FROM store.customer c WHERE c.\"Country\" = ? ");
 				var table = $('#table').rhTable({query: q1, paramFunc: function(){ return {p1: "USA"} }});
 
+				var oTable = table.data("table");
 
+				// ROW CLICK 
+                $('table td').live('dblclick',function(){
+                    var aPos = oTable.fnGetPosition(this);
+                    var aData = oTable.fnGetData(aPos[0]);
+                    window.open('fillReq.html?id='+aData[0],'_self');
+                });
+
+                // ROW HIGHLIGHT
+                $('tbody').click(function(event) {
+                    $(oTable.fnSettings().aoData).each(function (){
+                        $(this.nTr).removeClass('row_selected');
+                    });
+                    $(event.target.parentNode).addClass('row_selected');
+                });
+
+                // CHART
 				var q2 = server.query("SELECT * FROM store.sales c WHERE c.\"SAL_UNITS\" > 2 AND c.\"SAL_ID\" > 251350 ");
 				$('#chart').rhChart({query: q2});
 
 			} );
 		</script>
 
-
 	</head>
 		<body id="dt_example">
-		<div id="container">	
-			<h1>Customers</h1>
-			<div class="test" id="table"></div><br>
-			<div class="test" id="chart"></div>
-		</div>
-
-	</body>
+			<div id="container">	
+				<h1>Customers</h1>
+				<div class="test" id="table"></div><br>
+				<div class="test" id="chart"></div>
+			</div>
+		</body>
 </html>

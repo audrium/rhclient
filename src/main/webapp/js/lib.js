@@ -9,6 +9,7 @@
 		 			sql: sql,
 		 			id: undefined,
 		 			refresh: function() {
+		 				console.log("REFRESH: "+this.sql);
 				        $.ajax({
 					        type: 		 "POST",
 					        url: 		 this.url + "/query",
@@ -31,7 +32,6 @@
 				    	}
 				    },
 				    data: function(options) {
-
 				    	options = $.extend({
 				    		type: "application/json",
 				    		ppage: undefined,
