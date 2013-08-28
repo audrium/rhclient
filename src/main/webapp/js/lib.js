@@ -6,10 +6,10 @@
 		 	query: function(sql) {
 		 		return {
 		 			url: this.url,
-		 			sql: sql,
+		 			sql: 'SELECT * FROM ( ' + sql + ' ) a ',
+		 			reset_sql: 'SELECT * FROM ( ' + sql + ' ) a ',
 		 			id: undefined,
 		 			refresh: function() {
-		 				console.log("REFRESH: "+this.sql);
 				        $.ajax({
 					        type: 		 "POST",
 					        url: 		 this.url + "/query",
@@ -52,7 +52,6 @@
 				    		url += '/page/' + options.ppage + '/' + options.page;
 				    	}
 				    	url += "/data";
-
 				    	var async = options.callBack != undefined;
 
 				    	$.ajax({

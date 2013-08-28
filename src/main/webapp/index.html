@@ -2,8 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico" />
-		
+	
 		<title>DataTables example</title>
 		<style type="text/css" title="currentStyle">
 			@import "external/DataTables-1.9.4/media/css/demo_page.css";
@@ -13,6 +12,7 @@
 		</style>
 		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/jquery.js"></script>
 		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" language="javascript" src="external/DataTables-1.9.4/media/js/dataTables.addons.js"></script>
 		<script type="text/javascript" language="javascript" src="external/Highcharts/js/highcharts.js"></script>
 		<script type="text/javascript" language="javascript" src="js/lib.js"></script>
 		<script type="text/javascript" language="javascript" src="js/table.js"></script>
@@ -20,41 +20,60 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready(function() {
-				
-				var server = $.rhServer("http://pccmsdqm04:8112");
-				var q1 = server.query("SELECT * FROM store.customer c WHERE c.\"Country\" = ? ");
-				var table = $('#table').rhTable({query: q1, paramFunc: function(){ return {p1: "USA"} }});
 
+				var server = $.rhServer("http://pccmsdqm04:8112");
+
+				// Customers table and chart
+				var q1 = server.query("SELECT * FROM store.customers c WHERE c.ID > :p1");		
+				$('#customer-chart').rhChart2({query: q1, params: {p1: 1000}});	
+
+				// adds a link in ID column
+				var tableOptions = {
+					"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+							$('td:eq(0)', nRow).html( '<a href=info.html?id='+aData[0]+'>'+aData[0]+'</a>' );
+							return nRow;
+					}
+				};	
+				var table = $('#customer-table').rhTable({query: q1, params: {p1: 1000} , tableOptions: tableOptions});
+		
+				// Products table and brands chart
+				var q2 = server.query("SELECT * FROM store.products c");
+				$('#brands-chart').rhChart1({query: q2});				
+				$('#brands-table').rhTable({query: q2});
+
+				// *** Adding features to the first table
 				var oTable = table.data("table");
 
-				// ROW CLICK 
-                $('table td').live('dblclick',function(){
-                    var aPos = oTable.fnGetPosition(this);
-                    var aData = oTable.fnGetData(aPos[0]);
-                    window.open('fillReq.html?id='+aData[0],'_self');
-                });
+				// enable double click on the row 
+				$('#customer-table table td').live('dblclick',function(){
+				    var aPos = oTable.fnGetPosition(this);
+				    var aData = oTable.fnGetData(aPos[0]);
+				    window.open('info.html?id='+aData[0],'_self');
+				});
 
-                // ROW HIGHLIGHT
-                $('tbody').click(function(event) {
-                    $(oTable.fnSettings().aoData).each(function (){
-                        $(this.nTr).removeClass('row_selected');
-                    });
-                    $(event.target.parentNode).addClass('row_selected');
-                });
-
-                // CHART
-				var q2 = server.query("SELECT * FROM store.sales c WHERE c.\"SAL_UNITS\" > 2 AND c.\"SAL_ID\" > 251350 ");
-				$('#chart').rhChart({query: q2});
+				// highlight the row when selected
+				$('#customer-table tbody').click(function(event) {
+				    $(oTable.fnSettings().aoData).each(function (){
+				        $(this.nTr).removeClass('row_selected');
+				    });
+				    $(event.target.parentNode).addClass('row_selected');
+				});
 
 			} );
 		</script>
 
 	</head>
 		<body id="dt_example">
-			<div id="container">	
+			<div id="container" style="width:90%;">	
 				<h1>Customers</h1>
-				<div class="test" id="table"></div><br>
-				<div class="test" id="chart"></div>
+				<div id="customer-table"></div><br>
+				<div id="customer-chart"></div>
+
+				<div id="brands-container">	
+					<h1>Products table and brands chart</h1>
+					<div id="brands-table" style="width:48%; float:right;"></div>
+					<div id="brands-chart" style="width:48%; float:left;"></div>
+				</div>
 			</div>
 		</body>
 </html>
