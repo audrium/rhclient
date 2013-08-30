@@ -63,9 +63,9 @@
                                                 }
                                                 // ORDER BY
                                                 var columnVal = aoData[7 + maxColumns * 4].value;
-                                                var column = columns[columnVal].name;
+                                                var columnName = columns[columnVal].name;
                                                 var orderType = aoData[8 + maxColumns * 4].value;
-                                                var oderBy = ' ORDER BY a.' + column + ' ' + orderType;
+                                                var oderBy = ' ORDER BY a.' + columnName + ' ' + orderType;
 
                                                 options.query.sql = options.query.reset_sql;
 
